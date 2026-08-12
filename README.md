@@ -1,6 +1,6 @@
 <img alt="React Native Segmented Control 2" src="assets/logo.png" width="1050"/>
 
-[![React Native Segmented Control 2](https://img.shields.io/badge/-%F0%9F%9A%80%20React%20Native%20Segmented%20Control%2C%20Pure%20Javascript%20for%20iOS%20and%20Android-orange?style=for-the-badge)](https://github.com/WrathChaos/react-native-segmented-control-2)
+[![React Native Segmented Control 2](https://img.shields.io/badge/-%F0%9F%9A%80%20React%20Native%20Segmented%20Control%2C%20Pure%20Javascript%20for%20iOS%20and%20Android-orange?style=for-the-badge)](https://github.com/kuraydev/react-native-segmented-control-2)
 
 [![npm version](https://img.shields.io/npm/v/react-native-segmented-control-2.svg?style=for-the-badge)](https://www.npmjs.com/package/react-native-segmented-control-2)
 [![npm](https://img.shields.io/npm/dt/react-native-segmented-control-2.svg?style=for-the-badge)](https://www.npmjs.com/package/react-native-segmented-control-2)
@@ -9,123 +9,205 @@
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg?style=for-the-badge)](https://github.com/prettier/prettier)
 
 <p align="center">
-  <img alt="React Native Segmented Control 2"
+  <img alt="React Native Segmented Control 2 demo"
         src="assets/Screenshots/react-native-segmented-control-2.gif" height="1010" width="465" />
 </p>
 
-# Installation
+An iOS-style segmented control for React Native — pure JavaScript, one component, zero native code.
 
-Add the dependency:
+## Highlights
+
+- 🪶 **Zero dependencies** — plain React Native, works everywhere RN works
+- 🎬 **Springy sliding indicator** — animated with the native driver
+- 🎛 **Controlled or uncontrolled** — pass `value` to own the state, or let it manage itself
+- 🧩 **Any element as a tab** — strings, icons, or fully composed views
+- 🎨 **Fully themeable** — track, indicator, text, per-tab styles
+- 🕳 **Inset shadow** — recess the track with an inner shadow _(new in 2.2)_
+- 🌍 **RTL support** — indicator direction follows `I18nManager`
+- ♿️ **Accessible** — tabs expose `button` role with `selected` / `disabled` states
+- 🏗 **New Architecture ready** — even tab distribution and correct indicator offsets under Fabric
+- 🟦 **TypeScript** — written in TS, types shipped in the box
+
+## Installation
 
 ```bash
-npm i react-native-segmented-control-2
+npm install react-native-segmented-control-2
+# or
+yarn add react-native-segmented-control-2
 ```
 
-## Peer Dependencies
+## Quick start
 
-<b><i>Zero Dependency</i></b> 🥳
-
-# Usage
-
-## Import
-
-```jsx
+```tsx
 import SegmentedControl from "react-native-segmented-control-2";
-```
 
-## Fundamental Usage
-
-```jsx
 <SegmentedControl
-  tabs={["Label 1", "Label 2", "Label 3"]}
-  onChange={(index: number) => console.log("Index: ", index)}
-/>
+  tabs={["Day", "Week", "Month"]}
+  onChange={(index) => console.log(index)}
+/>;
 ```
 
-As controlled component:
+That's the whole API: an array of tabs in, the pressed index out.
 
-```jsx
+## Usage
+
+### Controlled
+
+Pass `value` to drive the selection from your own state — useful when other
+UI (buttons, gestures, remote state) can change the selection too.
+
+```tsx
 const [index, setIndex] = useState(0);
-return (
-  <SegmentedControl
-    tabs={["Label 1", "Label 2", "Label 3"]}
-    onChange={setIndex}
-    value={index}
-  />
-);
+
+<SegmentedControl
+  tabs={["One", "Two", "Three"]}
+  value={index}
+  onChange={setIndex}
+/>;
 ```
 
-## Customized Usage
+Without `value`, the component manages its own state; use `initialIndex` to
+pick the starting tab.
 
-```jsx
+### Theming
+
+Track, indicator, and text colors are all styleable:
+
+```tsx
 <SegmentedControl
-  style={{ marginTop: 32, backgroundColor: "#ffe0e0" }}
-  activeTabColor="#ff2929"
-  activeTextColor="#fff"
-  tabs={["Label 1", "Label 2", "Label 3"]}
-  onChange={(index: number) => console.log("Index: ", index)}
+  tabs={["Income", "Expenses", "Exchange"]}
+  style={{ backgroundColor: "#D6E9FF" }}
+  activeTabColor="#0A84FF"
+  activeTextColor="#FFFFFF"
+  textStyle={{ color: "#0A84FF" }}
+  onChange={(index) => console.log(index)}
 />
 ```
 
-### Any Component Usage
+### Inset shadow — _new in 2.2_ 🕳
 
-You can use the segmented control with any component.
-All you need to do is that put any component into the `tabs` props.
-Please check out the `example` for its usage
+Recess the track with an inner shadow so the raised indicator visually sits
+inside it. Pass `true` for a sensible default, or a CSS-like `boxShadow`
+string for full control:
 
-## Example Project 😍
+```tsx
+<SegmentedControl
+  tabs={["Inbox", "Archive", "Trash"]}
+  insetShadow
+  onChange={(index) => console.log(index)}
+/>
 
-You can checkout the example project 🥰
+<SegmentedControl
+  tabs={["Inbox", "Archive", "Trash"]}
+  insetShadow="inset 0 3px 8px rgba(0, 0, 0, 0.35)"
+  onChange={(index) => console.log(index)}
+/>
+```
 
-Simply run
+> Uses React Native's `boxShadow` style, available on RN 0.76+. On older
+> versions the prop is ignored and the track stays flat.
 
-- `npm i`
-- `react-native run-ios/android`
+### Any element as a tab
 
-should work of the example project.
+Tabs don't have to be strings — pass any React element:
 
-# Configuration - Props
+```tsx
+<SegmentedControl
+  tabs={[
+    <Icon name="book" />,
+    <Icon name="glasses" />,
+    <Icon name="history" />,
+  ]}
+  onChange={(index) => console.log(index)}
+/>
+```
 
-## Fundamentals
+Compose freely — icon + label rows, badges, whatever you need. See the
+[example app](example/App.tsx) for an icon-and-label "model picker" tab.
 
-| Property |   Type   |  Default  | Description                                          |
-| -------- | :------: | :-------: | ---------------------------------------------------- |
-| tabs     |  any[]   | undefined | set the array for tabs                               |
-| onChange | function | undefined | set your own logic when the tab is pressed / changed |
-| value    |  number  | undefined | value of index if used as a controlled component     |
+### Per-tab styles
 
-## Customization (Optionals)
+`tabStyle` accepts a plain style or a function of the tab index:
 
-| Property         |       Type        |  Default  | Description                                                                                                        |
-| ---------------- | :---------------: | :-------: | ------------------------------------------------------------------------------------------------------------------ |
-| style            |     ViewStyle     |  default  | set or override the style object for the main container                                                            |
-| initialIndex     |      number       |     0     | set the initial index                                                                                              |
-| activeTextColor  |      string       |   #000    | change the active tab's text color                                                                                 |
-| activeTabColor   |      string       |   #FFF    | change the active tab's color                                                                                      |
-| gap              |      number       |     0     | set extra spacing for animation horizontal value                                                                   |
-| tabStyle         |     ViewStyle     |  default  | set or override the style object for the tab                                                                       |
-| selectedTabStyle |     ViewStyle     |  default  | set or override the style object for the selected tab                                                              |
-| activeTextStyle  |     TextStyle     |  default  | set or override the style object for the active tab's text                                                         |
-| textStyle        |     TextStyle     |  default  | set or override the style object for tab's text                                                                    |
-| disabled         |      boolean      |   false   | stop the tabs from responding to presses                                                                           |
-| insetShadow      | boolean \| string |   false   | recess the track with an inner shadow; `true` uses a default, or pass a `boxShadow` string to customize (RN 0.76+) |
-| testID           |      string       | undefined | set on the container; each tab also gets `${testID}-tab-${index}`                                                  |
+```tsx
+<SegmentedControl
+  tabs={["S", "M", "L", "XL"]}
+  tabStyle={(index) => ({ opacity: index === 3 ? 0.5 : 1 })}
+  onChange={(index) => console.log(index)}
+/>
+```
 
-## Future Plans
+### Disabled & testing
 
-- [x] ~~LICENSE~~
-- [x] ~~Controller component support~~ (Thanks to @madox2 (https://github.com/WrathChaos/react-native-segmented-control-2/pull/6))
-- [x] ~~Getting rid of screen width and manual width dependencies~~ (Thanks to @philo23 (https://github.com/WrathChaos/react-native-segmented-control-2/pull/7)
-- [ ] Write an article about the lib on Medium
+```tsx
+<SegmentedControl
+  tabs={["Draft", "Published"]}
+  disabled={isLocked}
+  testID="status-switch" // tabs get "status-switch-tab-0", "-tab-1", …
+  onChange={setStatus}
+/>
+```
+
+## Props
+
+### Fundamentals
+
+| Property   |             Type             |  Default  | Description                                         |
+| ---------- | :--------------------------: | :-------: | --------------------------------------------------- |
+| `tabs`     | `(string \| ReactElement)[]` | required  | the tabs to render                                  |
+| `onChange` |  `(index: number) => void`   | required  | called with the index of the pressed tab            |
+| `value`    |           `number`           | undefined | selected index, when used as a controlled component |
+
+### Customization
+
+| Property           |                    Type                     |  Default  | Description                                                                                                          |
+| ------------------ | :-----------------------------------------: | :-------: | -------------------------------------------------------------------------------------------------------------------- |
+| `initialIndex`     |                  `number`                   |    `0`    | starting tab for uncontrolled usage                                                                                  |
+| `style`            |                 `ViewStyle`                 |  default  | style of the outer track container                                                                                   |
+| `activeTabColor`   |                  `string`                   |  `#FFF`   | color of the sliding indicator                                                                                       |
+| `activeTextColor`  |                  `string`                   |  `#000`   | text color of the active tab                                                                                         |
+| `textStyle`        |                 `TextStyle`                 |  default  | style of every tab's text                                                                                            |
+| `activeTextStyle`  |                 `TextStyle`                 |  default  | extra text style applied only to the active tab                                                                      |
+| `tabStyle`         | `ViewStyle \| (index: number) => ViewStyle` |  default  | style of each tab; pass a function for per-tab styles                                                                |
+| `selectedTabStyle` |                 `ViewStyle`                 |  default  | extra style for the sliding indicator                                                                                |
+| `gap`              |                  `number`                   |    `2`    | inset between the indicator and the track edges                                                                      |
+| `insetShadow`      |             `boolean \| string`             |  `false`  | recess the track with an inner shadow; `true` uses a default, or pass a `boxShadow` string to customize _(RN 0.76+)_ |
+| `disabled`         |                  `boolean`                  |  `false`  | stop the tabs from responding to presses                                                                             |
+| `testID`           |                  `string`                   | undefined | set on the container; each tab also gets `` `${testID}-tab-${index}` ``                                              |
+
+## TypeScript
+
+Props and tab types are exported:
+
+```tsx
+import SegmentedControl, {
+  SegmentedControlProps,
+  TabItem,
+} from "react-native-segmented-control-2";
+```
+
+## Example app
+
+The [`example/`](example) folder is an Expo app showcasing every feature —
+it's the app in the demo above, including an in-app light/dark theme switch.
+
+```bash
+cd example
+npm install
+npx expo start --ios   # or --android
+```
 
 ## Credits
 
-Heavily inspired by these libraries:
+Originally inspired by
+[react-native-segmented-control/segmented-control](https://github.com/react-native-segmented-control/segmented-control)
+and
+[Karthik-B-06/react-native-segmented-control](https://github.com/Karthik-B-06/react-native-segmented-control) —
+built as an actively maintained, pure-JavaScript alternative with more
+customization.
 
-- [react-native-segmented-control/segmented-control](https://github.com/react-native-segmented-control/segmented-control)
-- [Karthik-B-06/react-native-segmented-control](https://github.com/Karthik-B-06/react-native-segmented-control)
-
-I created this library because they're really not maintain actively and this is a pure javascript written library with a lot of customizations and better code structure
+Thanks to @madox2 for controlled-component support and @philo23 for removing
+the screen-width dependency.
 
 ## Author
 
@@ -133,4 +215,5 @@ FreakyCoder, kurayogun@gmail.com
 
 ## License
 
-React Native Segmented Control 2 is available under the MIT license. See the LICENSE file for more info.
+React Native Segmented Control 2 is available under the MIT license. See the
+LICENSE file for more info.
