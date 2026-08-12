@@ -1,7 +1,7 @@
 {
   "name": "react-native-segmented-control-2",
   "version": "2.2.0",
-  "description": "🚀 React Native Segmented Control, Pure Javascript for iOS and Android",
+  "description": "\ud83d\ude80 React Native Segmented Control, Pure Javascript for iOS and Android",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
   "types": "lib/typescript/src/index.d.ts",
@@ -42,6 +42,7 @@
   ],
   "scripts": {
     "build": "bob build",
+    "prepack": "npm run build",
     "prepare": "husky",
     "typecheck": "tsc --noEmit",
     "lint": "node scripts/terminal/lint.mjs",
