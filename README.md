@@ -10,7 +10,7 @@
 
 <p align="center">
   <img alt="React Native Segmented Control 2"
-        src="assets/Screenshots/react-native-segmented-control-2.gif" height="950" width="465" />
+        src="assets/Screenshots/react-native-segmented-control-2.gif" height="1010" width="465" />
 </p>
 
 # Installation
@@ -45,14 +45,14 @@ import SegmentedControl from "react-native-segmented-control-2";
 As controlled component:
 
 ```jsx
-const [index, setIndex] = useState(0)
+const [index, setIndex] = useState(0);
 return (
   <SegmentedControl
     tabs={["Label 1", "Label 2", "Label 3"]}
     onChange={setIndex}
     value={index}
   />
-)
+);
 ```
 
 ## Customized Usage
@@ -92,24 +92,24 @@ should work of the example project.
 | -------- | :------: | :-------: | ---------------------------------------------------- |
 | tabs     |  any[]   | undefined | set the array for tabs                               |
 | onChange | function | undefined | set your own logic when the tab is pressed / changed |
-| value    | number   | undefined | value of index if used as a controlled component     |
+| value    |  number  | undefined | value of index if used as a controlled component     |
 
 ## Customization (Optionals)
 
-| Property         |   Type    | Default | Description                                                |
-|------------------|:---------:|:-------:|------------------------------------------------------------|
-| style            | ViewStyle | default | set or override the style object for the main container    |
-| initialIndex     |  number   |    0    | set the initial index                                      |
-| activeTextColor  |  string   |  #000   | change the active tab's text color                         |
-| activeTabColor   |  string   |  #FFF   | change the active tab's color                              |
-| gap              |  number   |    0    | set extra spacing for animation horizontal value           |
-| tabStyle         | ViewStyle | default | set or override the style object for the tab               |
-| selectedTabStyle | ViewStyle | default | set or override the style object for the selected tab      |
-| activeTextStyle  | TextStyle | default | set or override the style object for the active tab's text |
-| textStyle        | TextStyle | default | set or override the style object for tab's text            |
-| disabled         |  boolean  |  false  | stop the tabs from responding to presses                   |
-| insetShadow      | boolean \| string | false | recess the track with an inner shadow; `true` uses a default, or pass a `boxShadow` string to customize (RN 0.76+) |
-| testID           |  string   | undefined | set on the container; each tab also gets `${testID}-tab-${index}` |
+| Property         |       Type        |  Default  | Description                                                                                                        |
+| ---------------- | :---------------: | :-------: | ------------------------------------------------------------------------------------------------------------------ |
+| style            |     ViewStyle     |  default  | set or override the style object for the main container                                                            |
+| initialIndex     |      number       |     0     | set the initial index                                                                                              |
+| activeTextColor  |      string       |   #000    | change the active tab's text color                                                                                 |
+| activeTabColor   |      string       |   #FFF    | change the active tab's color                                                                                      |
+| gap              |      number       |     0     | set extra spacing for animation horizontal value                                                                   |
+| tabStyle         |     ViewStyle     |  default  | set or override the style object for the tab                                                                       |
+| selectedTabStyle |     ViewStyle     |  default  | set or override the style object for the selected tab                                                              |
+| activeTextStyle  |     TextStyle     |  default  | set or override the style object for the active tab's text                                                         |
+| textStyle        |     TextStyle     |  default  | set or override the style object for tab's text                                                                    |
+| disabled         |      boolean      |   false   | stop the tabs from responding to presses                                                                           |
+| insetShadow      | boolean \| string |   false   | recess the track with an inner shadow; `true` uses a default, or pass a `boxShadow` string to customize (RN 0.76+) |
+| testID           |      string       | undefined | set on the container; each tab also gets `${testID}-tab-${index}`                                                  |
 
 ## Future Plans
 
