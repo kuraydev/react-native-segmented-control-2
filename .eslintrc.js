@@ -68,6 +68,7 @@ module.exports = {
     "package.json",
     "package-lock.json",
     "lib/**",
+    "example/**",
   ],
   rules: {
     "prettier/prettier": [
