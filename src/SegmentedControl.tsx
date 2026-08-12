@@ -9,18 +9,20 @@ import {
   View,
   Text,
   Animated,
+  TouchableOpacity,
+  I18nManager,
+} from "react-native";
+import type {
   StyleProp,
   ViewStyle,
-  TouchableOpacity,
   TextStyle,
-  I18nManager,
   LayoutChangeEvent,
 } from "react-native";
 import styles from "./SegmentedControl.style";
 
-type TabItem = string | React.ReactElement;
+export type TabItem = string | React.ReactElement;
 
-interface SegmentedControlProps {
+export interface SegmentedControlProps {
   tabs: TabItem[];
   initialIndex?: number;
   activeTextColor?: string;
