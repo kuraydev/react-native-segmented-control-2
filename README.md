@@ -107,6 +107,8 @@ should work of the example project.
 | selectedTabStyle | ViewStyle | default | set or override the style object for the selected tab      |
 | activeTextStyle  | TextStyle | default | set or override the style object for the active tab's text |
 | textStyle        | TextStyle | default | set or override the style object for tab's text            |
+| disabled         |  boolean  |  false  | stop the tabs from responding to presses                   |
+| testID           |  string   | undefined | set on the container; each tab also gets `${testID}-tab-${index}` |
 
 ## Future Plans
 

@@ -1,6 +1,6 @@
 {
   "name": "react-native-segmented-control-2",
-  "version": "2.1.1add",
+  "version": "2.2.0",
   "description": "🚀 React Native Segmented Control, Pure Javascript for iOS and Android",
   "main": "./build/dist/SegmentedControl.js",
   "repository": "git@github.com:WrathChaos/react-native-segmented-control-2.git",

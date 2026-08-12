@@ -13,8 +13,13 @@ const baseStyles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
   },
+  // flexBasis/minWidth pin every tab to an equal share. Without them a tab
+  // whose label is wider than its share can claim the extra space under the
+  // New Architecture, leaving the tabs unevenly split.
   tab: {
     flex: 1,
+    flexBasis: 0,
+    minWidth: 0,
     paddingVertical: 8, // iOS Default
     alignItems: "center",
     justifyContent: "center",
@@ -34,9 +39,11 @@ const styles = {
     activeTabColor: string,
     slideAnimation: Animated.Value,
   ) => ({
-    ...StyleSheet.absoluteFillObject,
+    position: "absolute" as const,
+    top: gap,
+    bottom: gap,
+    start: gap,
     width: tabWidth,
-    margin: gap,
     backgroundColor: activeTabColor,
     transform: [{ translateX: slideAnimation }],
     borderRadius: 6,
