@@ -35,7 +35,13 @@ interface SegmentedControlProps {
   selectedTabStyle?: StyleProp<ViewStyle>;
   onChange: (index: number) => void;
   value?: number;
+  // Recess the track with an inner shadow. `true` applies a sensible default;
+  // pass a CSS-like `boxShadow` string to fully customize it. Requires the
+  // React Native `boxShadow` style support (RN 0.76+); ignored on older versions.
+  insetShadow?: boolean | string;
 }
+
+const DEFAULT_INSET_SHADOW = "inset 0px 2px 4px rgba(0, 0, 0, 0.15)";
 
 const SegmentedControl: React.FC<SegmentedControlProps> = ({
   style,
@@ -52,6 +58,7 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
   gap = 2,
   activeTextColor = "#000",
   activeTabColor = "#fff",
+  insetShadow = false,
 }) => {
   const slideAnimation = useRef(new Animated.Value(0)).current;
   const [localCurrentIndex, setCurrentIndex] = useState<number>(initialIndex);
@@ -122,6 +129,14 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
     [tabWidth, gap, activeTabColor, slideAnimation],
   );
 
+  const insetShadowStyle = useMemo<ViewStyle | undefined>(() => {
+    if (!insetShadow) return undefined;
+    return {
+      boxShadow:
+        typeof insetShadow === "string" ? insetShadow : DEFAULT_INSET_SHADOW,
+    };
+  }, [insetShadow]);
+
   const renderTab = (tab: TabItem, index: number) => {
     const isActiveTab = currentIndex === index;
     const isTabText = typeof tab === "string";
@@ -159,7 +174,7 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
     <View
       testID={testID}
       onLayout={onLayoutTrack}
-      style={[styles.container, style]}
+      style={[styles.container, insetShadowStyle, style]}
     >
       {tabWidth > 0 && (
         <Animated.View

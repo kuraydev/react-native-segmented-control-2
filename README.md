@@ -108,6 +108,7 @@ should work of the example project.
 | activeTextStyle  | TextStyle | default | set or override the style object for the active tab's text |
 | textStyle        | TextStyle | default | set or override the style object for tab's text            |
 | disabled         |  boolean  |  false  | stop the tabs from responding to presses                   |
+| insetShadow      | boolean \| string | false | recess the track with an inner shadow; `true` uses a default, or pass a `boxShadow` string to customize (RN 0.76+) |
 | testID           |  string   | undefined | set on the container; each tab also gets `${testID}-tab-${index}` |
 
 ## Future Plans
