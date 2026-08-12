@@ -1,4 +1,5 @@
-import { Animated, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
+import type { Animated } from "react-native";
 
 const baseStyles = StyleSheet.create({
   container: {
