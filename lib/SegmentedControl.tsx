@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   View,
   Text,
@@ -9,7 +15,6 @@ import {
   TextStyle,
   I18nManager,
   LayoutChangeEvent,
-  LayoutRectangle,
 } from "react-native";
 import styles from "./SegmentedControl.style";
 
@@ -21,6 +26,8 @@ interface SegmentedControlProps {
   activeTextColor?: string;
   activeTabColor?: string;
   gap?: number;
+  disabled?: boolean;
+  testID?: string;
   style?: StyleProp<ViewStyle>;
   tabStyle?: StyleProp<ViewStyle> | ((index: number) => StyleProp<ViewStyle>);
   textStyle?: StyleProp<TextStyle>;
@@ -39,44 +46,65 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
   textStyle,
   activeTextStyle,
   selectedTabStyle,
+  testID,
+  disabled = false,
   initialIndex = 0,
   gap = 2,
   activeTextColor = "#000",
   activeTabColor = "#fff",
 }) => {
-  const [slideAnimation] = useState(new Animated.Value(0));
+  const slideAnimation = useRef(new Animated.Value(0)).current;
   const [localCurrentIndex, setCurrentIndex] = useState<number>(initialIndex);
-  const [tabLayouts, setTabLayouts] = useState<{
-    [tabIndex: number]: LayoutRectangle;
-  }>({});
+  const [trackWidth, setTrackWidth] = useState(0);
 
-  const currentIndex = value ?? localCurrentIndex;
+  const isControlled = value !== undefined;
+  const currentIndex = isControlled ? value : localCurrentIndex;
+
+  // Every tab is an equal slice of the track, so the indicator never has to
+  // wait on a per-tab onLayout to know where it belongs. Measuring each tab
+  // separately let the New Architecture report them one frame apart, which is
+  // what made the indicator land on a stale offset.
+  const tabWidth = tabs.length > 0 ? trackWidth / tabs.length : 0;
 
   const handleTabPress = useCallback(
     (index: number) => {
-      setCurrentIndex(index);
-      onChange && onChange(index);
+      if (!isControlled) {
+        setCurrentIndex(index);
+      }
+      onChange(index);
     },
-    [onChange],
+    [isControlled, onChange],
   );
 
+  const onLayoutTrack = useCallback(
+    ({ nativeEvent }: LayoutChangeEvent) => {
+      setTrackWidth(Math.max(0, nativeEvent.layout.width - gap * 2));
+    },
+    [gap],
+  );
+
+  // Jump to the starting offset once measured, then animate on later changes,
+  // so the indicator does not slide in from the left on first paint.
+  const hasPositioned = useRef(false);
   useEffect(() => {
+    if (tabWidth === 0) return;
+
+    const toValue = (I18nManager.isRTL ? -1 : 1) * currentIndex * tabWidth;
+
+    if (!hasPositioned.current) {
+      hasPositioned.current = true;
+      slideAnimation.setValue(toValue);
+      return;
+    }
+
     Animated.spring(slideAnimation, {
-      toValue:
-        (I18nManager.isRTL ? -1 : 1) * (tabLayouts[currentIndex]?.x || 0),
+      toValue,
       stiffness: 180,
       damping: 25,
       mass: 1,
       useNativeDriver: true,
     }).start();
-  }, [currentIndex, slideAnimation, tabLayouts]);
-
-  const onLayoutTab = useCallback(
-    (index: number, { nativeEvent }: LayoutChangeEvent) => {
-      setTabLayouts((prev) => ({ ...prev, [index]: nativeEvent.layout }));
-    },
-    [],
-  );
+  }, [currentIndex, slideAnimation, tabWidth]);
 
   const tabSpecificStyle = useCallback(
     (tabIndex: number) => {
@@ -89,28 +117,9 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
     [tabStyle],
   );
 
-  const renderSelectedTab = useCallback(
-    () => (
-      <Animated.View
-        style={[
-          styles.activeTab(
-            tabLayouts[currentIndex]?.width || 0,
-            gap,
-            activeTabColor,
-            slideAnimation,
-          ),
-          selectedTabStyle,
-        ]}
-      />
-    ),
-    [
-      activeTabColor,
-      gap,
-      selectedTabStyle,
-      slideAnimation,
-      tabLayouts,
-      currentIndex,
-    ],
+  const indicatorStyle = useMemo(
+    () => styles.activeTab(tabWidth, gap, activeTabColor, slideAnimation),
+    [tabWidth, gap, activeTabColor, slideAnimation],
   );
 
   const renderTab = (tab: TabItem, index: number) => {
@@ -120,9 +129,12 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
       <TouchableOpacity
         key={index}
         activeOpacity={0.5}
+        disabled={disabled}
+        accessibilityRole="button"
+        accessibilityState={{ selected: isActiveTab, disabled }}
+        testID={testID ? `${testID}-tab-${index}` : undefined}
         style={[styles.tab, tabSpecificStyle(index)]}
         onPress={() => handleTabPress(index)}
-        onLayout={(e) => onLayoutTab(index, e)}
       >
         {!isTabText ? (
           tab
@@ -144,8 +156,17 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
   };
 
   return (
-    <View style={[styles.container, style]}>
-      {renderSelectedTab()}
+    <View
+      testID={testID}
+      onLayout={onLayoutTrack}
+      style={[styles.container, style]}
+    >
+      {tabWidth > 0 && (
+        <Animated.View
+          pointerEvents="none"
+          style={[indicatorStyle, selectedTabStyle]}
+        />
+      )}
       <View style={[styles.tabsContainer, { marginHorizontal: gap }]}>
         {tabs.map((tab, index: number) => renderTab(tab, index))}
       </View>
