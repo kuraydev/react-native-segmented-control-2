@@ -1,21 +1,26 @@
 {
   "name": "react-native-segmented-control-2",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "\ud83d\ude80 React Native Segmented Control, Pure Javascript for iOS and Android",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
   "types": "lib/typescript/src/index.d.ts",
   "exports": {
     ".": {
+      "types": "./lib/typescript/src/index.d.ts",
       "import": "./lib/module/index.js",
       "require": "./lib/commonjs/index.js",
-      "types": "./lib/typescript/src/index.d.ts"
-    }
+      "default": "./lib/commonjs/index.js"
+    },
+    "./package.json": "./package.json"
   },
   "source": "src/index.ts",
   "files": [
     "src",
-    "lib"
+    "lib",
+    "!src/__tests__",
+    "README.md",
+    "LICENSE"
   ],
   "repository": {
     "type": "git",
